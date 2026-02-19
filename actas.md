@@ -3,8 +3,9 @@
 ## 18 de febrero de 2026
 **Asistentes**: grupo 02
 
-**Tema de la reunión**: Se acuerdan las inconsistencias / dudas / ambiguedades de los requisitos. 
+**Tema de la reunión**: Se acuerdan las inconsistencias / dudas / ambigüedades de los requisitos. 
 
+**Duración**: 3h
 Se acuerda que:
 
 **Prototipos de pantalla**
@@ -26,3 +27,31 @@ En móvil, dar la opción de ampliar la imagen.
 - En el lobby se puede hacer la personalización individual de cada jugador (color de fondo, tablero…)
 
 Adicionalmente, se comienzan a definir las issues e hitos del proyecto, con el objetivo de elabrorar el diagrama de Gantt
+
+
+## 19 de febrero de 2026
+**Asistentes**: grupo 02
+
+**Tema de la reunión**: Se redactan los requisitos para evitar las ambigüedades. 
+
+**Duración**: 3h
+
+**Pendientes fruto de la discusión** 
+- Posible diccionario de datos: qué se muestra en el historial (fecha de la partida, victoria o derrota, aciertos o fallos), qué se entiende por número de aciertos, qué es un logro y tipos (días seguidos de conexión), medalla (correspondiente a num de partidas ganadas), imagen de perfil : 5 icons a elegir, que entendemos por personalizar (marco de carta y fondo de tablero), tema visual, paquete de cartas, pista, palabra (definir límte) , número, si han votado carta más de la mitad se selecciona carta, el orden de seleccion importa si un error el resto de tirnos invalido, solo puedes entrar a partidas con tu temática, listado de partidsa públicas, vista de jefe (ve el chat pero no participa), seleccionar intervalo, penalizaciones, abandonos reiterados ( 3 partidas seguidas), longitud de una palabra, estándares proteccion de datos, diseño actractivo e intuitivo????, leaderbord
+
+- Se acuerda concretar y compartir el contrato de API's y nombres por parte del equipo de backend, una vez se concrete la base de datos, con los equipos de frontend 
+
+**Comentarios de la entrega** 
+- Demo semana del 11 en el resumen ejecutivo NO entrega el 27
+- Resumen ejecutivo, versiones a las que nos comprometemos
+- 15 de marzo contrato de requisitos INCONTESTABLE
+- Tiempo de despliegue: si no, vídeos
+- Precio y coste en el resumen ejecutivo e hitos
+- Demasiados párrafos en objetivos, da imagen apresurada
+- Requisitos y GUI or encima de lo esperado, demasiado detallistas
+- Mapear horas con actividades en el presupuesto (issues genéricas maybe)
+- Definir hitos compuestos
+- Ha dicho que no afecta quitar el matchmaking
+- Quitamos la música de fondo 
+- Añadir jugador a partida privada
+- Se delega toda la autorización e la API
