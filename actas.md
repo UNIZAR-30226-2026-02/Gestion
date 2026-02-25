@@ -55,3 +55,23 @@ Adicionalmente, se comienzan a definir las issues e hitos del proyecto, con el o
 - Quitamos la música de fondo 
 - Añadir jugador a partida privada
 - Se delega toda la autorización e la API
+
+## 25 de febrero de 2026
+**Asistentes**: grupo 02
+
+**Tema de la reunión**: Concreción de detalles de la funcionalidad de la aplicación y organización.
+
+**Duración**: 2h
+
+Se acuerda que:
+
+- Se añadirá la opción de hacer zoom a las imágenes del tablero.
+- Los temas bloqueados aparecen bloqueados.
+- No se puede echar a jugadores de las partidas.
+- No se muestra el correo electrónico en el perfil del usuario.
+- En la tienda se muestran todos los artículos disponibles, indicando cuáles ya tiene adquiridos el usuario con un tick.
+
+**Planificación**
+Se acuerda que para la entrega del día 15 se habrá comprobado el correcto funcionamiento de la comunicación e interacción entre frontend y backend.
+
+
