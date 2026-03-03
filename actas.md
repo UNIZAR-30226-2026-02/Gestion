@@ -75,3 +75,17 @@ Se acuerda que:
 Se acuerda que para la entrega del día 15 se habrá comprobado el correcto funcionamiento de la comunicación e interacción entre frontend y backend.
 
 
+## 03 de marzo de 2026
+**Asistentes**: grupo 02
+
+**Aspectos comentados en la reunión a tener en cuenta** 
+
+- Solo hacer los diagramas necesarios, no hace falta hacer todas las que se han dado en teoría.
+- Hacer despliegue (AWS / Azure) con código simple para comprobar que no falla y hacer pruebas.
+- Probar en los móviles físicos con los que se va a demostrar la aplicación que funciona bien.
+- Hacer pruebas automatizadas para el backend.
+- Simulador capaz de reproducir todos los escenarios posibles en las partidas de forma automática.
+- Planificar la demostración para hacer un recorrido por todas las funcionalidades (en 1h).
+- Las partes más importantes del documento del 15 de marzo son la 3 y la 4. Hay aspectos que no se van a poder abordar aún.
+- Booleano en la tabla de jugador de activo/no activo para no borrar tuplas de jugador aunque se borre la cuenta.
+
