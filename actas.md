@@ -89,3 +89,25 @@ Se acuerda que para la entrega del día 15 se habrá comprobado el correcto func
 - Las partes más importantes del documento del 15 de marzo son la 3 y la 4. Hay aspectos que no se van a poder abordar aún.
 - Booleano en la tabla de jugador de activo/no activo para no borrar tuplas de jugador aunque se borre la cuenta.
 
+## 11 de marzo de 2026
+**Asistentes**: grupo 02
+
+**Aspectos comentados en la reunión a tener en cuenta**
+
+- Se acuerda utilizar Azure para el despliegue del sistema.
+- Se relacionarán las GitHub Actions con el despliegue en Azure.
+- Se acuerda tener para el viernes 13 de marzo por parte del backend y el frontend el código necesario para hacer la conexión de la pantalla de 'Lista de partidas públicas'.
+- Se acuerdan los siguientes hitos intermedios, basados en los requisitos del sistema, a cumplir por todos los subgrupos por orden de prioridad:
+    Para la primera iteración (6 de abril):
+        1. RF10 - RF21, RF23, RF26
+        2. RNF1, RNF4
+    Para la segunda iteración se realizará el resto de requisitos.
+- Se establecen los roles del proyecto: 
+    - Directora del proyecto: Adriana Sainz
+    - Control de configuraciones construcción del software y aseguramiento de la calidad del producto: Berta Castillo, Jorge Andrés y el resto a debatir.
+    -  Calendario del proyecto, división del trabajo, coordinación, comunicaciones, monitorización y seguimiento: Adriana Sainz, Daniel Blasco y el resto a debatir.
+
+
+
+
+
