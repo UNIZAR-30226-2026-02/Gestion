@@ -92,6 +92,8 @@ Se acuerda que para la entrega del día 15 se habrá comprobado el correcto func
 ## 11 de marzo de 2026
 **Asistentes**: grupo 02
 
+**Duración**: 2h
+
 **Aspectos comentados en la reunión a tener en cuenta**
 
 - Se acuerda utilizar Azure para el despliegue del sistema.
@@ -105,9 +107,23 @@ Se acuerda que para la entrega del día 15 se habrá comprobado el correcto func
 - Se establecen los roles del proyecto: 
     - Directora del proyecto: Adriana Sainz
     - Control de configuraciones construcción del software y aseguramiento de la calidad del producto: Berta Castillo, Jorge Andrés y el resto a debatir.
-    -  Calendario del proyecto, división del trabajo, coordinación, comunicaciones, monitorización y seguimiento: Adriana Sainz, Daniel Blasco y el resto a debatir.
+    -  Calendario del proyecto, división del trabajo, coordinación, comunicaciones, monitorización y seguimiento: Adriana Sainz, Daniel Blasco y el resto a debatir.a
 
 
+## 18 de marzo de 2026
+**Asistentes**: grupo 02
 
+**Duración**: 2h
+
+**Aspectos tratados**
+
+Se discute y acuerda el contrato de la API, con los endpoints correspondientes al login, creación de partidas y lobby.
+
+Algunos de los aspectos a detacar son:
+
+- En el lobby de partidas públicas no se puede modificar nada. En el lobby de las partidas privadas puede cambiar el tiempo de turno y el tema de cartas (a uno de los que dispone el jugador creador).
+- Botón INICIAR PARTIDA solo si es el creador (solo cuando se ha alcanzado el número mínimo en cada equipo).
+
+El contrato de la API se incluye en un documento de texto en el Google Drive del equipo.
 
 
