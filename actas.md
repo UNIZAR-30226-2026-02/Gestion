@@ -126,4 +126,21 @@ Algunos de los aspectos a detacar son:
 
 El contrato de la API se incluye en un documento de texto en el Google Drive del equipo.
 
+## 19 de marzo de 2026
+**Asistentes**: grupo 02
+
+**Duración**: 2h
+
+**Retroalimentación del profesor**
+- La primera iteración realmente estaba planificada para el 15 de marzo, aunque la hemos planificado para el 1 de abril.
+- Añadir diagramas de secuencia o de estado al documento, para mostrar la dinámica del juego. Modelar ejemplo de flujo de partida.
+- Detallar los requisitos.
+- Añadir reglas del juego.
+- Automatización de pruebas en Actions.
+- Hello World en Azure (cuidado con la configuración).
+- La última reunión es la de la práctica 5 pero se pueden pedir tutorías después. Tras la práctica 5, se podrá elegir la fecha de demostración en la semana de evaluación continua (11 de mayo).
+- El vídeo no tiene que durar más de 5 minutos y es recomendable que no tenga audio.
+
+**Aspectos tratados**
+- Se han acordado los detalles sobre los requisitos.
 
