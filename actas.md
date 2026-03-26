@@ -119,7 +119,7 @@ Se acuerda que para la entrega del día 15 se habrá comprobado el correcto func
 
 Se discute y acuerda el contrato de la API, con los endpoints correspondientes al login, creación de partidas y lobby.
 
-Algunos de los aspectos a detacar son:
+Algunos de los aspectos a destacar son:
 
 - En el lobby de partidas públicas no se puede modificar nada. En el lobby de las partidas privadas puede cambiar el tiempo de turno y el tema de cartas (a uno de los que dispone el jugador creador).
 - Botón INICIAR PARTIDA solo si es el creador (solo cuando se ha alcanzado el número mínimo en cada equipo).
@@ -143,4 +143,12 @@ El contrato de la API se incluye en un documento de texto en el Google Drive del
 
 **Aspectos tratados**
 - Se han acordado los detalles sobre los requisitos.
+
+## 24 de marzo de 2026
+**Asistentes**: grupo 02
+
+**Duración**: 2h
+
+**Aspectos tratados**
+Se dedicó la reunión a probar la integración entre frontend y backend de las funcionalidades que se acordaron para esta fecha, aunque no terminaron de probarse todas ellas. Se corrigieron ciertos errores de conectividad y se acordó que el frontend va a utilizar **snake case** al enviar los datos a la API a través de los JSON.
 
