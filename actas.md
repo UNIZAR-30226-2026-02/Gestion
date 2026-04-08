@@ -152,3 +152,15 @@ El contrato de la API se incluye en un documento de texto en el Google Drive del
 **Aspectos tratados**
 Se dedicó la reunión a probar la integración entre frontend y backend de las funcionalidades que se acordaron para esta fecha, aunque no terminaron de probarse todas ellas. Se corrigieron ciertos errores de conectividad y se acordó que el frontend va a utilizar **snake case** al enviar los datos a la API a través de los JSON.
 
+
+## 8 de abril de 2026
+**Asistentes**: grupo 02
+
+**Duración**: 2h
+
+**ODD**
+1. Análisis de la autoevalución comentarios y propuestas de mejora
+2. Decisión nueva fecha de despliegue
+3. Aclaración de siguiente hito
+4. Redistribución de equipos si es pertinente
+5. Decisión de fechas de exposición y demostración 
