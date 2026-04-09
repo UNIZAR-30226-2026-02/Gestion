@@ -159,8 +159,26 @@ Se dedicó la reunión a probar la integración entre frontend y backend de las 
 **Duración**: 2h
 
 **ODD**
-1. Análisis de la autoevalución comentarios y propuestas de mejora
-2. Decisión nueva fecha de despliegue
-3. Aclaración de siguiente hito
-4. Redistribución de equipos si es pertinente
-5. Decisión de fechas de exposición y demostración 
+1. Análisis de la autoevalución comentarios y propuestas de mejora \
+
+Se acuerda que a las issues de todos los repositorios se les asignarán como issues padre aquellas que pertenecen al repositorio de Gestión. Se analiza el porcentaje de requisitos cubiertos actualmente, en relación con las horas totales del equipo, y se evalúa la causa del retraso del despliegue respecto al plazo establecido. Se recuerda la necesidad de utilizar el protocolo de workflow detallado en el Plan de Gestión.
+
+2. Decisión nueva fecha de despliegue \
+
+Dado que no se cumplió con la fecha fijada para el despliegue, se acuerda finalizarlo el día 11 de abril. 
+
+3. Aclaración de siguiente hito \
+
+El siguiente hito es el 11 de abril, fecha en la que además se dispondrá del despliegue. Los requisitos que se acuerda completar para entonces se detallan en la issue *Logros, medallas, social, modificar perfil y leaderboard*.
+
+4. Redistribución de equipos si es pertinente \
+
+Se acuerda que Jorge Bellido, actual integrante de backend, se una temporalmente al equipo de frontend móvil.
+
+5. Decisión de fechas de exposición y demostración \
+
+La fecha de exposición de la aplicación se establece para el día 4 de mayo de 2026 (16-18h).
+La fecha de demostración de la aplicación se establece para el día 14 de mayo de 2026 (10h).
+
+6. Brainstorming de presentación a los compañeros. \
+Se acuerda tener un momento Star en la presentación y la vestimenta a conjunto por parte de todo el equipo.
