@@ -182,3 +182,23 @@ La fecha de demostración de la aplicación se establece para el día 14 de mayo
 
 6. Brainstorming de presentación a los compañeros. \
 Se acuerda tener un momento Star en la presentación y la vestimenta a conjunto por parte de todo el equipo.
+
+## 14 de abril de 2026
+**Asistentes**: grupo 02
+
+**Duración**: 1h
+
+**ODD**
+1. Reevaluación de la fecha de demostración de la aplicación.
+
+Se acuerda cambiar la fecha de la demostración al día 15 de abril tras la confirmación de un miembro del equipo de su ausencia el día 14.
+
+2. Comentarios del progreso hasta el momento.
+
+Se acuerda comprobar el correcto funcionamiento de todas las funcionalidades de la aplicación tras modificaciones y optimizaciones realizadas en el backend. Se revisará que se estén usando protocolos de protección seguros (HTTPS, WSS). Se modificará la población de la base de datos para incluir en la tabla 'Personalización' el código hexadecimal de los colores de las personalizaciones ofrecidas en la tienda. Todos los miembros del equipo se comprometen a actualizar las tareas realizadas y las horas invertidas para enviarlas en el formulario de la práctica 5.
+
+3. Programación de reunión para el día 20 de abril.
+
+Se acuerda realizar el 20 de abril una reunión para evaluar todos los requisitos de la aplicación y valorar su completitud.
+
+
