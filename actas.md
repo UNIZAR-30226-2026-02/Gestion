@@ -201,4 +201,17 @@ Se acuerda comprobar el correcto funcionamiento de todas las funcionalidades de 
 
 Se acuerda realizar el 20 de abril una reunión para evaluar todos los requisitos de la aplicación y valorar su completitud.
 
+## 16 de abril de 2026
+**Asistentes**: grupo 02
 
+**Duración**: 1h
+
+**Comentarios del tutor**
+
+- Se comenta la irregularidad de que Jorge Javier tenga 12.000 líneas de código respecto al resto del equipo. 
+
+- Forma de evaluación en la demostración: el profesor tomará los requisitos que se le enviaron y comprobará que todos ellos funcionen en la aplicación. Con él se hacen las pruebas de aceptación. Las pruebas a realizar por el equipo son las de unidad, integración y de sistema (deben ser más exigentes que las de aceptación), que deben asegurar que se cumplen los requisitos valorando todas las posibles situaciones.
+
+- Se comenta que para la presentación no hay que introducir demasiada performance.
+
+- Se debe tener un reporte intermedio de horas para trackear las horas invertidas desde esta fecha hasta la demostración.
