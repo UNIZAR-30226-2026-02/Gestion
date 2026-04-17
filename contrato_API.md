@@ -1,222 +1,283 @@
-# Contrato de API - Código Secreto (Secret Panda S.L.)
+# Documentación de la API de Código Secreto
 
-En este archivo se concretan las URLs (endpoints) a utilizar para la comunicación entre el backend y el frontend.
+Esta documentación detalla los endpoints disponibles en el backend del proyecto Código Secreto, incluyendo descripciones de su uso y los atributos intercambiados en cada petición y respuesta.
 
----
+## 1. Autenticación (`/api/auth`)
 
-## 1. API REST (Peticiones HTTP - Gestión fuera de partida)
+### POST `/api/auth/login`
+- **Descripción:** Recibe el idToken de Google para autenticar al usuario.
+- **Recibe (Body - `LoginRequestDTO`):**
+    - `id_google` (String): El idToken proporcionado por Google.
+- **Envía (Response - `AuthResponseDTO`):**
+    - `es_nuevo` (boolean): `true` si el jugador no existe y debe registrarse.
+    - `token` (String): JWT de sesión (solo si `es_nuevo` es `false`).
+    - `jugador` (`JugadorDTO`): Perfil del jugador (solo si `es_nuevo` es `false`).
+    - `partida_activa_id` (Integer): ID de la partida en curso si el jugador tiene una pendiente.
 
-**URL Base:** `https://api.codigosecreto.com/api`
-**Autenticación:** Cabecera `Authorization: Bearer <token_google>` obligatoria (salvo en `/auth/login`).
+### POST `/api/auth/registro`
+- **Descripción:** Crea un nuevo jugador tras la verificación de Google.
+- **Recibe (Body - `RegistroRequestDTO`):**
+    - `id_google` (String): Identificador único de Google (sub).
+    - `tag` (String): Nombre de usuario elegido.
+- **Envía (Response - `AuthResponseDTO`):**
+    - `es_nuevo` (boolean): `false`.
+    - `token` (String): JWT de sesión generado.
+    - `jugador` (`JugadorDTO`): Perfil del jugador recién creado.
+    - `partida_activa_id` (Integer): `null` normalmente.
 
-### 1.1. Gestión de Usuarios y Perfil
+### POST `/api/auth/logout`
+- **Descripción:** Invalida la sesión del usuario eliminando la cookie HttpOnly.
+- **Recibe:** Nada.
+- **Envía:** 204 No Content.
 
-#### `POST /auth/login`
-* **Funcionalidad:** Punto de entrada al sistema tras la validación de Google (RF-1, RF-2).
-* **Body Frontend:** `{"id_google": "token_proporcionado_por_google"}`
-* **Comportamiento Backend:** 1. Verifica el token con la API de Google Auth 2.0 (RNF-7).
-  2. Busca en la tabla `JUGADOR`. Si no existe, hace un `INSERT` con estadísticas a 0 y balas iniciales.
-  3. Ejecuta el método `iniciarSesionGoogle()`.
-* **Respuesta (200 OK):** Objeto `JUGADOR` completo.
-
-#### `GET /jugadores/{id_google}`
-* **Funcionalidad:** Obtener el perfil y las estadísticas globales (RF-3).
-* **Comportamiento Backend:** Hace un `SELECT` en `JUGADOR` para traer `victorias`, `partidas_jugadas`, `numAciertos`, `numFallos` y `balas`. Ejecuta `mostrarEstadisticas()`.
-* **Respuesta (200 OK):** Objeto `JUGADOR`.
-
-#### `PUT /jugadores/{id_google}`
-* **Funcionalidad:** Modificación del perfil del usuario (RF-6).
-* **Body Frontend:** `{"tag": "NuevoPanda", "fotoPerfil": "uri_imagen_perfil.png"}`
-* **Comportamiento Backend:** Hace un `UPDATE` en la tabla `JUGADOR` validando que el `tag` (que es Unique Key) no esté ya cogido por otro jugador. Ejecuta `listalmgPerfil()` para asegurar que la foto es una de las 5 válidas.
-* **Respuesta (200 OK):** Objeto `JUGADOR` actualizado. Error `409 Conflict` si el tag ya existe.
-
-#### `GET /jugadores/{id_google}/historial`
-* **Funcionalidad:** Consultar partidas pasadas (RF-4).
-* **Comportamiento Backend:** Ejecuta `listarHistorial()`. Hace un `JOIN` entre `JUGADOR_PARTIDA` y `PARTIDA` donde el jugador participó. **CRÍTICO:** Se aplica un `LIMIT 30` ordenado por `fechaFin DESC`.
-* **Respuesta (200 OK):** Array de objetos combinando datos de `PARTIDA` y `JUGADOR_PARTIDA`.
-
----
-
-### 1.2. Logros y Leaderboards
-
-#### `GET /jugadores/{id_google}/logros`
-* **Funcionalidad:** Obtener el progreso de la colección de medallas (RF-5).
-* **Comportamiento Backend:** Ejecuta `listarLogros()`. Cruza las tablas `LOGRO` y `JUGADOR_LOGRO`.
-* **Respuesta (200 OK):** Array de objetos mezclados: `[{"id_logro": 1, "nombre": "Novato", "progreso_actual": 10, "completado": true}]`
-
-
-#### `GET /leaderboard/global`
-* **Funcionalidad:** Clasificación mundial de jugadores (RF-25).
-* **Comportamiento Backend:** Ejecuta `listarRankingGlobal()`. Hace un `SELECT` en `JUGADOR` ordenado por `victorias DESC`. Aplica un límite (ej. top 100).
-* **Respuesta (200 OK):** Array de objetos `JUGADOR` **completos**.
-  *Nota: El frontend debe filtrar y mostrar solo los atributos públicos (tag, fotoPerfil, victorias) en la UI, pero recibe el objeto completo para coherencia con el resto de endpoints.*
-
-
-#### `GET /leaderboard/amigos/{id_google}`
-* **Funcionalidad:** Clasificación restringida a los amigos (RF-25).
-* **Comportamiento Backend:** Ejecuta `listarRankingAmigos()`. Obtiene los amigos de `AMISTAD` (estado "aceptada") y hace el ranking incluyendo al propio jugador.
-* **Respuesta (200 OK):** Array de objetos `JUGADOR` **completos** ordenados por victorias.
-  *Nota: El frontend debe filtrar y mostrar solo los atributos públicos en la UI, pero recibe el objeto completo para coherencia.*
+### PUT `/api/auth/desactivar`
+- **Descripción:** Realiza un borrado lógico de la cuenta del jugador e invalida la sesión.
+- **Recibe:** Nada (identifica al usuario por la sesión).
+- **Envía:** 204 No Content.
 
 ---
 
-### 1.3. Sistema de Amigos
+## 2. Jugadores (`/api/jugadores`)
 
-#### `POST /amigos/{id_google}/solicitudes`
-* **Funcionalidad:** Enviar una petición de amistad (RF-24).
-* **Body Frontend:** `{"id_receptor": "tag_o_id_destino"}`
-* **Comportamiento Backend:** Ejecuta `enviarSolicitudAmistad()`. Inserta una fila en `AMISTAD` con estado "pendiente" y `fecha_solicitud` actual.
-* **Respuesta (201 Created):** Objeto `AMISTAD` creado.
+### GET `/api/jugadores`
+- **Descripción:** Obtiene el perfil completo del jugador autenticado.
+- **Recibe:** Nada.
+- **Envía (Response - `JugadorDTO`):**
+    - `id_google`, `tag`, `foto_perfil`, `balas`, `activo` (boolean).
+    - `partidas_jugadas`, `victorias`, `derrotas`, `num_aciertos`, `num_fallos`, `porcentaje_victorias` (double).
+    - `marco_carta_equipado`, `fondo_tablero_equipado` (String - URLs).
 
+### PUT `/api/jugadores`
+- **Descripción:** Actualiza el tag y/o la foto de perfil del jugador.
+- **Recibe (Body - `ActualizarPerfilDTO`):**
+    - `tag` (String, opcional).
+    - `foto_perfil` (String, opcional - URL).
+- **Envía (Response - `JugadorDTO`):** Perfil actualizado.
 
-#### `PUT /amigos/solicitudes/{id_solicitante}`
-* **Funcionalidad:** Aceptar o rechazar una solicitud entrante.
-* **Body Frontend:** `{"estado": "aceptada"}` (o "rechazada")
-* **Comportamiento Backend:** Hace un `UPDATE` (o `DELETE` si es rechazada) en la tabla `AMISTAD`.
-* **Respuesta (200 OK):** Objeto `AMISTAD` actualizado (o vacío si fue eliminada por rechazo).
-  *Nota: Se devuelve el objeto actualizado para mantener coherencia con el resto de endpoints.*
+### GET `/api/jugadores/temas`
+- **Descripción:** Obtiene la lista de packs de palabras (temas) adquiridos por el jugador.
+- **Recibe:** Nada.
+- **Envía (Response - List<`TemaInventarioDTO`>):**
+    - `id_tema`, `nombre`, `descripcion`.
 
----
+### GET `/api/jugadores/historial`
+- **Descripción:** Obtiene las últimas 30 partidas jugadas por el usuario.
+- **Recibe:** Nada.
+- **Envía (Response - List<`PartidaResumenDTO`>):**
+    - `id_partida`, `codigo_partida`, `fecha_fin`, `estado`, `rojo_gana` (Boolean).
+    - `equipo` ("rojo"/"azul"), `rol` ("lider"/"agente"), `abandono` (boolean).
+    - `num_aciertos`, `num_fallos`.
 
-### 1.4. Tienda y Personalización
+### GET `/api/jugadores/logros`
+- **Descripción:** Obtiene la colección de logros y medallas con su progreso.
+- **Recibe:** Nada.
+- **Envía (Response - List<`LogroDTO`>):**
+    - `id_logro`, `es_logro` (boolean), `nombre`, `descripcion`.
+    - `progreso_actual`, `progreso_max`, `completado` (boolean), `balas_recompensa`.
 
-#### `GET /tienda/temas`
-* **Funcionalidad:** Obtener el catálogo de la tienda (RF-8).
-* **Comportamiento Backend:** Ejecuta `listarTematicas()`. Devuelve filas de la tabla `TEMA` y `PERSONALIZACION`.
-* **Respuesta (200 OK):** Array de objetos `TEMA`.
+### GET `/api/jugadores/personalizaciones`
+- **Descripción:** Obtiene los cosméticos (marcos, fondos) adquiridos.
+- **Recibe:** Nada.
+- **Envía (Response - List<`PersonalizacionInventarioDTO`>):**
+    - `id_personalizacion`, `nombre`, `tipo` ("carta"/"tablero"), `valor_visual` (URL), `equipado` (boolean).
 
-
-#### `POST /tienda/comprar/{id_google}`
-* **Funcionalidad:** Transacción de compra de un aspecto o tema (RF-8).
-* **Body Frontend:** `{"id_tema": 3}`
-* **Comportamiento Backend:** 1. Ejecuta `verificarBalasDisponibles()` comprobando la tabla `JUGADOR`. Si no hay balas, lanza HTTP `400`.
-  2. Ejecuta `restarBalas()` haciendo `UPDATE` en `JUGADOR`.
-  3. Hace un `INSERT` en `INVENTARIO_PERSONALIZACION`.
-* **Respuesta (200 OK):**
-  - `{"balas_restantes": 100, "mensaje": "Compra exitosa"}`
-  - **Opcional:** También puede devolverse el objeto `JUGADOR` actualizado para que el frontend tenga el estado completo tras la compra.
-  *Nota: Se devuelve el objeto JUGADOR actualizado para coherencia y facilitar la actualización del estado en frontend.*
-
----
-
-### 1.5. Gestión de Partidas (Lobby)
-
-#### `POST /partidas`
-* **Funcionalidad:** Crear una sala nueva (RF-12).
-* **Body Frontend:** `{"id_creador": "...", "id_tema": 3, "tiempoEspera": 60, "maxJugadores": 8, "esPublica": true}`
-* **Comportamiento Backend:** Inserta en `PARTIDA`, autogenera el `codigo_partida` alfanumérico. Añade al creador a la tabla `JUGADOR_PARTIDA`.
-* **Respuesta (201 Created):** Objeto `PARTIDA` completo.
-
-#### `GET /partidas/publicas`
-* **Funcionalidad:** Listado para el "Matchmaking" (RF-19).
-* **Comportamiento Backend:** Ejecuta `listar Partidas Disponibles()`. Busca partidas con `esPublica = true` y `estado = "ESPERANDO"`. **Validación:** Filtra para devolver solo aquellas cuyo `id_tema` el jugador ya posea en su `INVENTARIO_PERSONALIZACION`.
-* **Respuesta (200 OK):** Array de `PARTIDA`.
-
-#### `POST /partidas/{id_partida}/unirse`
-* **Funcionalidad:** Entrar al lobby de una partida.
-* **Body Frontend:** `{"id_jugador": "...", "codigo_partida": "XJ92K"}` (el código solo si es privada).
-* **Comportamiento Backend:** 1. `verificar Codigolnvitacion()` (si aplica).
-  2. `maxJugadoresAlcanzado()`: Si la sala está llena, devuelve error `403`.
-  3. Inserta fila en `JUGADOR_PARTIDA`.
-* **Respuesta (200 OK):** Objeto `JUGADOR_PARTIDA`.
-
-#### `DELETE /partidas/{id_partida}/jugadores/{id_jugador_partida}`
-* **Funcionalidad:** Abandonar la partida (RF-11).
-* **Comportamiento Backend:** Ejecuta `detectarAbandono Reiterado()`. Elimina o marca como inactivo en `JUGADOR_PARTIDA`. Aplica penalización de -10 balas haciendo `UPDATE` en `JUGADOR`.
-* **Respuesta (200 OK):** Vacía.
-
----
----
-
-## 2. API WebSockets (Tiempo Real - En Partida)
-
-**Protocolo:** STOMP sobre WebSockets (WSS). Latencia estricta < 500ms.
-
-### 2.1. Sincronización del Tablero (El Backend difunde)
-* **Canal de Suscripción Frontend:** `/topic/partidas/{id_partida}/estado`
-* **Comportamiento Backend:** Cuando la partida arranca (o un jugador se reconecta RNF-1), el backend ejecuta `listarCartas Tablero()` y envía el tablero. 
-* **REGLA DE SEGURIDAD (ANTI-TRAMPAS):** Antes de enviar el JSON, el backend comprueba el `rol` de los destinatarios. 
-  * A los **Agentes** les sobreescribe el atributo `tipo` de la tabla `TABLERO_CARTA` enviando el valor `"oculta"`. 
-  * A los **Jefes**, les envía el valor real `"rojo"`, `"azul"`, `"asesino"`, `"civil"`.
-* **Payload difundido:**
-```json
-{
-  "evento": "ACTUALIZACION_TABLERO",
-  "partida": { "estado": "EN_CURSO", "turno_actual": "ROJO", "fase": "VOTACION" },
-  "tablero": [ { "id_carta_tablero": 1, "id_palabra": "uri_imagen.png", "estado": "OCULTA", "tipo": "oculta" } ]
-}
-```
-
-## 2.2. Acción: Dar Pista (Jefe de Espionaje)
-
-**Frontend envía a:**  
-`/app/partidas/{id_partida}/pista`
-
-**Comportamiento Backend:**  
-Inserta un nuevo registro en la tabla `TURNO` con `palabraPista` y `pistaNumero`.  
-Activa el temporizador de votación (RF-26).  
-Difunde el evento al canal `/topic/partidas/{id_partida}/estado` para que los agentes empiecen a jugar.
-
-**Payload Frontend:**
-```json
-{
-  "id_jugador_partida": 45,
-  "palabraPista": "Arma",
-  "pistaNumero": 2
-}
-```
+### PUT `/api/jugadores/equipar`
+- **Descripción:** Equipa o desequipa un cosmético.
+- **Recibe (Body - `EquiparItemRequest`):**
+    - `idPersonalizacion` (Integer).
+    - `equipado` (boolean).
+- **Envía:** 200 OK.
 
 ---
 
-## 2.3. Acción: Votar Carta (Agentes)
+## 3. Partidas y Lobby (`/api/partidas`)
 
-**Frontend envía a:**  
-`/app/partidas/{id_partida}/votar`
+### POST `/api/partidas/`
+- **Descripción:** Crea una nueva partida (privada o pública).
+- **Recibe (Body - `CrearPartidaDTO`):**
+    - `id_tema` (Integer), `tiempo_espera` (int: 30-120), `max_jugadores` (int: 4-16), `es_publica` (boolean).
+- **Envía (Response - `LobbyStatusDTO`):** Estado inicial del lobby de la partida creada.
 
-**Comportamiento Backend:**
+### POST `/api/partidas/{codigo_partida}/unirse/privada`
+- **Descripción:** Se une a una partida privada usando su código alfanumérico.
+- **Recibe:** `codigo_partida` en la URL.
+- **Envía (Response - Integer):** El ID interno de la partida para redirigir al jugador.
 
-1. Inserta fila en `VOTO_CARTA`.  
-2. Ejecuta `gestionarVotos()` calculando la mayoría simple en tiempo real.  
-3. Si hay mayoría:
-   - Ejecuta `comprobarResultadoVotacion()`.  
-   - Cambia el estado en `TABLERO_CARTA` a `"REVELADA"`.  
-   - Difunde a todos la carta descubierta.  
-4. Comprueba condiciones de victoria (RF-22):
-   - ¿Se destapó el asesino?  
-   - ¿Se destaparon todas las del equipo?
+### POST `/api/partidas/{id_partida}/unirse/publica`
+- **Descripción:** Se une a una partida pública disponible.
+- **Recibe:** `id_partida` en la URL.
+- **Envía:** 200 OK.
 
-**Payload Frontend:**
-```json
-{
-  "id_jugador_partida": 48,
-  "id_carta_tablero": 12,
-  "id_turno": 5
-}
-```
+### DELETE `/api/partidas/{id_partida}/participantes`
+- **Descripción:** Abandona una partida en curso.
+- **Recibe:** `id_partida` en la URL.
+- **Envía:** 200 OK.
+
+### GET `/api/partidas/{id_partida}/participantes/rol`
+- **Descripción:** Obtiene el rol y equipo asignado al jugador en una partida.
+- **Recibe:** `id_partida` en la URL.
+- **Envía (Response - `RolPartidaDTO`):**
+    - `rol` ("lider"/"agente"), `equipo` ("rojo"/"azul"), `equipo_inicial`.
+
+### GET `/api/partidas/{id_partida}/lobby`
+- **Descripción:** Obtiene el estado completo del lobby (jugadores, configuración).
+- **Recibe:** `id_partida` en la URL.
+- **Envía (Response - `LobbyStatusDTO`):**
+    - `id_partida`, `codigo_partida`, `estado` ("esperando", "en_curso", "finalizada").
+    - `max_jugadores`, `es_publica`, `id_tema`, `nombre_tema`, `tiempo_espera`.
+    - `tag_creador`, `hay_minimo` (boolean).
+    - `jugadores` (List de `JugadorLobbyDTO` con `tag`, `foto_perfil`, `equipo`).
+
+### GET `/api/partidas/publicas`
+- **Descripción:** Lista todas las partidas públicas en espera.
+- **Recibe:** Nada.
+- **Envía (Response - List<`PartidaPublicaDTO`>):**
+    - `id_partida`, `tag` (creador), `nombre` (tema), `tiempo_espera`, `max_jugadores`, `jugadores_actuales`.
+
+### PUT `/api/partida/{id_partida}/iniciar`
+- **Descripción:** El creador inicia la partida (cambia estado a 'en_curso' y asigna roles).
+- **Recibe:** `id_partida` en la URL.
+- **Envía:** 200 OK.
 
 ---
 
-## 2.4. Chat Exclusivo por Equipos
+## 4. Clasificación y Social (`/api`)
 
-**Frontend envía a:**  
-`/app/partidas/{id_partida}/chat`
+### GET `/api/leaderboard/global`
+- **Descripción:** Ranking global de jugadores por número de victorias.
+- **Recibe:** Nada.
+- **Envía (Response - List<`RankingDTO`>):**
+    - `tag`, `foto_perfil`, `victorias`.
 
-**Frontend ROJO escucha en:**  
-`/topic/partidas/{id_partida}/chat/rojo`
+### GET `/api/leaderboard/amigos`
+- **Descripción:** Ranking entre los amigos del jugador.
+- **Recibe:** Nada.
+- **Envía (Response - List<`RankingDTO`>):** Igual que el global.
 
-**Frontend AZUL escucha en:**  
-`/topic/partidas/{id_partida}/chat/azul`
+### GET `/api/amigos`
+- **Descripción:** Obtiene la lista de amigos aceptados.
+- **Recibe:** Nada.
+- **Envía (Response - List<`RankingDTO`>):** Lista de amigos con su perfil básico.
 
-**Comportamiento Backend:**
+### GET `/api/amigos/solicitudes`
+- **Descripción:** Obtiene las solicitudes de amistad pendientes de recibir.
+- **Recibe:** Nada.
+- **Envía (Response - List<`AmistadDTO`>):**
+    - `id_solicitante`, `tag_solicitante`, `foto_perfil_solicitante`, `fecha_solicitud`, `estado`.
 
-1. El backend recibe el mensaje y pasa el filtro de palabras prohibidas (RF-28).  
-2. Inserta el mensaje en la tabla `CHAT`.  
-3. Difunde el mensaje únicamente al topic del equipo correspondiente (el Jefe de Espías de ese equipo está suscrito, pero su frontend no muestra input de escritura).
+### POST `/api/amigos/solicitudes`
+- **Descripción:** Envía una solicitud de amistad.
+- **Recibe (Body):** `{ "tag_receptor": "Nombre#1234" }`
+- **Envía:** 200 OK.
 
-**Payload Frontend:**
-```json
-{
-  "id_jugador_partida": 48,
-  "mensaje": "Es esa seguro"
-}
-```
+### PUT `/api/amigos/solicitudes`
+- **Descripción:** Acepta o rechaza una solicitud.
+- **Recibe (Body):** `{ "id_solicitante": "...", "estado": "aceptada" / "rechazada" }`
+- **Envía:** 200 OK.
+
+### GET `/api/jugadores/buscar`
+- **Descripción:** Busca jugadores por tag para enviar solicitudes.
+- **Recibe:** Query param `tag`.
+- **Envía (Response - List<`RankingDTO`>):** Jugadores encontrados.
+
+---
+
+## 5. Tienda (`/api`)
+
+### GET `/api/temas/activos`
+- **Descripción:** Lista los temas disponibles en la tienda.
+- **Recibe:** Nada.
+- **Envía (Response - List<`TemaDTO`>):**
+    - `id_tema`, `nombre`, `descripcion`, `precio_balas`, `comprado` (boolean).
+
+### GET `/api/personalizaciones/activas`
+- **Descripción:** Lista los cosméticos disponibles en la tienda.
+- **Recibe:** Nada.
+- **Envía (Response - List<`PersonalizacionDTO`>):**
+    - `id_personalizacion`, `nombre`, `descripcion`, `precio_bala`, `tipo`, `valor_visual`, `comprado` (boolean).
+
+### POST `/api/tienda/comprar/{id_google}`
+- **Descripción:** Realiza la compra de un tema o personalización.
+- **Recibe (Body - `CompraRequestDTO`):**
+    - `id_tema` (Integer, opcional).
+    - `id_personalizacion` (Integer, opcional).
+- **Envía (Response - Map):**
+    - `balas_restantes` (int).
+    - `mensaje` (String).
+
+---
+
+## 6. Juego (Gameplay)
+
+### GET `/api/partidas/{id_partida}/estado`
+- **Descripción:** Carga el estado inicial del tablero y el turno al entrar a jugar.
+- **Recibe:** `id_partida` en la URL.
+- **Envía (Response - `GameStateDTO`):**
+    - `id_partida`, `estado`, `equipo_turno_actual`, `fase_turno` ("esperando_pista"/"votando").
+    - `cartas_rojas_restantes`, `cartas_azules_restantes`, `rojo_gana`.
+    - `pista_actual` (`PistaDTO`): `palabra_pista`, `pista_numero`, `equipo_lider`, `aciertos_turno`.
+    - `tablero` (`TableroDTO`): List de `CartaDTO` (`id_carta_tablero`, `palabra`, `fila`, `columna`, `estado`, `tipo` - *el tipo es null si es oculta para el agente*).
+    - `votos_turno_actual` (List de `VotoDTO`: `id_carta_tablero`, `tag`, `equipo`).
+
+### GET `/api/partidas/{id_partida}/resultado`
+- **Descripción:** Obtiene el estado final de una partida terminada para la pantalla de resultados.
+- **Recibe:** `id_partida` en la URL.
+- **Envía (Response - `GameStateDTO`):** Incluye todo el tablero revelado.
+
+### GET `/api/partida/{id_partida}/fin`
+- **Descripción:** Obtiene un resumen estadístico del cierre de la partida.
+- **Recibe:** `id_partida` en la URL.
+- **Envía (Response - `PartidaFinDTO`):**
+    - `equipo_ganador` (String: "rojo" o "azul").
+    - `aciertos_rojo` (int).
+    - `aciertos_azul` (int).
+
+---
+
+## 7. Utilidades y Test
+
+### GET `/api/hello`
+- **Descripción:** Endpoint de prueba para verificar que el backend está operativo.
+- **Envía:** String de saludo.
+
+---
+
+## 8. WebSockets (STOMP)
+
+### Suscripción a Partidas Públicas
+- **Topic:** `/topic/partidas/publicas`
+- **Tipo:** `SubscribeMapping` (Envía datos inmediatamente al suscribirse).
+- **Envía (List<`PartidaPublicaDTO`>):** Lista de partidas en espera.
+
+### Enviar Mensaje de Chat
+- **Topic:** `/app/partidas/{id_partida}/chat`
+- **Recibe (Payload - `EnviarMensajeDTO`):**
+    - `mensaje` (String).
+- **Broadcast (Hacia el equipo):** `/topic/partidas/{id}/chat/{equipo}`
+- **Atributos Enviados (`ChatMessageDTO`):** `id_mensaje`, `id_partida`, `id_jugador`, `tag`, `equipo`, `mensaje`, `fecha`, `es_valido`.
+
+### Dar Pista (Solo Líder)
+- **Topic:** `/app/partidas/{id_partida}/pista`
+- **Recibe (Payload):** `{ "palabra_pista": "string", "pista_numero": int }`
+- **Acción:** Emite `PistaDTO` a `/topic/partidas/{id}/pista` y actualiza el estado.
+
+### Votar Carta (Solo Agente)
+- **Topic:** `/app/partidas/{id_partida}/votar`
+- **Recibe (Payload):** `{ "id_carta_tablero": int, "id_turno": int (opcional) }`
+- **Acción:** Registra el voto y comprueba si se resuelve la votación.
+
+### Cambiar Equipo (Lobby)
+- **Topic:** `/app/partida/{id_partida}/participantes/equipo`
+- **Recibe (Payload):** `{ "equipo": "rojo" / "azul" }`
+
+### Cambiar Tema/Tiempo (Lobby - Creador)
+- **Topics:** `/app/partida/{id}/tema`, `/app/partida/{id}/tiempoTurno`
+- **Recibe:** ID del tema o segundos de espera respectivamente.
+
+### Abandonar Lobby
+- **Topic:** `/app/partida/{id_partida}/abandonarLobby`
+- **Descripción:** Notifica que un jugador sale del lobby antes de empezar.
+
+### Temporizador (Servidor -> Cliente)
+- **Topic:** `/topic/partidas/{id}/temporizador`
+- **Envía (`TemporizadorDTO`):** `id_partida`, `segundos_restantes`.
