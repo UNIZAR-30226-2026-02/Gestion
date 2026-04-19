@@ -84,7 +84,7 @@ Esta documentación detalla los endpoints disponibles en el backend del proyecto
 ### PUT `/api/jugadores/equipar`
 - **Descripción:** Equipa o desequipa un cosmético.
 - **Recibe (Body - `EquiparItemRequest`):**
-    - `idPersonalizacion` (Integer).
+    - `id_personalizacion` (Integer).
     - `equipado` (boolean).
 - **Envía:** 200 OK.
 
@@ -196,8 +196,8 @@ Esta documentación detalla los endpoints disponibles en el backend del proyecto
 - **Envía (Response - List<`PersonalizacionDTO`>):**
     - `id_personalizacion`, `nombre`, `descripcion`, `precio_bala`, `tipo`, `valor_visual`, `comprado` (boolean).
 
-### POST `/api/tienda/comprar/{id_google}`
-- **Descripción:** Realiza la compra de un tema o personalización.
+### POST `/api/tienda/comprar`
+- **Descripción:** Realiza la compra de un tema o personalización (ID de usuario extraído automáticamente del JWT).
 - **Recibe (Body - `CompraRequestDTO`):**
     - `id_tema` (Integer, opcional).
     - `id_personalizacion` (Integer, opcional).
@@ -213,7 +213,7 @@ Esta documentación detalla los endpoints disponibles en el backend del proyecto
 - **Descripción:** Carga el estado inicial del tablero y el turno al entrar a jugar.
 - **Recibe:** `id_partida` en la URL.
 - **Envía (Response - `GameStateDTO`):**
-    - `id_partida`, `estado`, `equipo_turno_actual`, `fase_turno` ("esperando_pista"/"votando").
+    - `id_partida`, `estado`, `equipo_turno_actual`, `fase_turno` ("esperando_pista"/"votando"), `segundos_restantes`.
     - `cartas_rojas_restantes`, `cartas_azules_restantes`, `rojo_gana`.
     - `pista_actual` (`PistaDTO`): `palabra_pista`, `pista_numero`, `equipo_lider`, `aciertos_turno`.
     - `tablero` (`TableroDTO`): List de `CartaDTO` (`id_carta_tablero`, `palabra`, `fila`, `columna`, `estado`, `tipo` - *el tipo es null si es oculta para el agente*).
@@ -222,7 +222,7 @@ Esta documentación detalla los endpoints disponibles en el backend del proyecto
 ### GET `/api/partidas/{id_partida}/resultado`
 - **Descripción:** Obtiene el estado final de una partida terminada para la pantalla de resultados.
 - **Recibe:** `id_partida` en la URL.
-- **Envía (Response - `GameStateDTO`):** Incluye todo el tablero revelado.
+- **Envía (Response - `GameStateDTO`):** Incluye todo el tablero revelado y `segundos_restantes` a 0.
 
 ### GET `/api/partida/{id_partida}/fin`
 - **Descripción:** Obtiene un resumen estadístico del cierre de la partida.
