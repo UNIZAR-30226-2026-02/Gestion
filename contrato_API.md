@@ -196,14 +196,15 @@ Esta documentación detalla los endpoints disponibles en el backend del proyecto
 - **Envía (Response - List<`PersonalizacionDTO`>):**
     - `id_personalizacion`, `nombre`, `descripcion`, `precio_bala`, `tipo`, `valor_visual`, `comprado` (boolean).
 
-### POST `/api/tienda/comprar`
-- **Descripción:** Realiza la compra de un tema o personalización (ID de usuario extraído automáticamente del JWT).
-- **Recibe (Body - `CompraRequestDTO`):**
-    - `id_tema` (Integer, opcional).
-    - `id_personalizacion` (Integer, opcional).
-- **Envía (Response - Map):**
-    - `balas_restantes` (int).
-    - `mensaje` (String).
+### POST `/api/tienda/comprar/tema`
+- **Descripción:** Realiza la compra de un paquete de cartas (tema).
+- **Recibe (Body):** `{ "id_tema": Integer }`
+- **Envía (Response):** `{ "balas": Integer }` (saldo restante).
+
+### POST `/api/tienda/comprar/personalizacion`
+- **Descripción:** Realiza la compra de un cosmético (personalización).
+- **Recibe (Body):** `{ "id_personalizacion": Integer }`
+- **Envía (Response):** `{ "balas": Integer }` (saldo restante).
 
 ---
 
@@ -214,6 +215,7 @@ Esta documentación detalla los endpoints disponibles en el backend del proyecto
 - **Recibe:** `id_partida` en la URL.
 - **Envía (Response - `GameStateDTO`):**
     - `id_partida`, `estado`, `equipo_turno_actual`, `fase_turno` ("esperando_pista"/"votando"), `segundos_restantes`.
+    - `num_jugadores_rojo`, `num_jugadores_azul` (int).
     - `cartas_rojas_restantes`, `cartas_azules_restantes`, `rojo_gana`.
     - `pista_actual` (`PistaDTO`): `palabra_pista`, `pista_numero`, `equipo_lider`, `aciertos_turno`.
     - `tablero` (`TableroDTO`): List de `CartaDTO` (`id_carta_tablero`, `palabra`, `fila`, `columna`, `estado`, `tipo` - *el tipo es null si es oculta para el agente*).
