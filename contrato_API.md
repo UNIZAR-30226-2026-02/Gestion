@@ -66,7 +66,7 @@ Esta documentación detalla los endpoints disponibles en el backend del proyecto
 - **Envía (Response - List<`PartidaResumenDTO`>):**
     - `id_partida`, `codigo_partida`, `fecha_fin`, `estado`, `rojo_gana` (Boolean).
     - `equipo` ("rojo"/"azul"), `rol` ("lider"/"agente"), `abandono` (boolean).
-    - `num_aciertos`, `num_fallos`.
+    - `num_aciertos`, `num_fallos`, `tag_creador`.
 
 ### GET `/api/jugadores/logros`
 - **Descripción:** Obtiene la colección de logros y medallas con su progreso.
