@@ -63,3 +63,29 @@ frikardo
 suicidate
 mamahuevo
 mamabicho
+cara polla
+tus muertos
+sus muertos
+pelacalvos
+tus muertos a caballo
+cojinete
+cojones
+discapacitado mental
+discapacitado
+atontao
+niggger
+chigger
+fuck
+fuck you
+pina
+amariconao
+desustanciao
+lamecharcos
+lameculos
+lamepingas
+pinche pendejo
+payo
+payito
+payote
+panchito 
+pancho
