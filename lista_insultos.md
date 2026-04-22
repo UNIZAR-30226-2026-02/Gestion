@@ -53,3 +53,13 @@ joder
 jodienda
 mierda
 toca pelotas
+putos
+maricas
+maricones
+putitos
+estupido
+friki
+frikardo
+suicidate
+mamahuevo
+mamabicho
