@@ -215,3 +215,15 @@ Se acuerda realizar el 20 de abril una reunión para evaluar todos los requisito
 - Se comenta que para la presentación no hay que introducir demasiada performance.
 
 - Se debe tener un reporte intermedio de horas para trackear las horas invertidas desde esta fecha hasta la demostración.
+
+## 22 de abril de 2026
+**Asistentes**: grupo 02
+
+**Duración**: 2h
+
+**Comentarios del tutor**
+
+**ODD**
+1. Hacer checklist de lo que está terminado y lo que falta, dividiendo por backend, frontend web y móvil.
+
+Se ha realizado una evaluación de las funcionalidades que están completadas, detallando en una checklist los defectos encontrados para su conexión.
